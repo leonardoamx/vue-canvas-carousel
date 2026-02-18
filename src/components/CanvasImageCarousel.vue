@@ -71,6 +71,16 @@ const loadImages = () => {
 }
 
 const renderImages = (deltaX: number) => {
+  // Adjust carousel boundaries
+  if(slidesPosition.x + deltaX > 0) {
+    slidesPosition.x = 0;
+    deltaX = 0;
+  }
+  if(slidesPosition.x + deltaX < -(canvasSize.width * (imageElements.length - 1)) ) {
+    slidesPosition.x = -(canvasSize.width * (imageElements.length - 1));
+    deltaX = 0;
+  }
+
   canvasContext.value?.clearRect(0, 0, canvasSize.width, canvasSize.height);
   imageElements.forEach((item, index: number) => {
     let scale = Math.min(canvasSize.width / item.width, canvasSize.height / item.height);

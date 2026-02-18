@@ -11,8 +11,17 @@ const canvasSize = {
   width: 800,
   height: 600
 };
+const initialPointerPosition = {
+  x: 0,
+  y: 0
+};
+const slidesPosition = {
+  x: 0,
+  y: 0
+};
 
-let imageElements = [];
+let imageElements: HTMLImageElement[] = [];
+let isDragActive = false;
 
 
 onMounted(() => {
@@ -20,34 +29,74 @@ onMounted(() => {
 });
 
 
+const dragStart = (event: PointerEvent) => {
+  isDragActive = true;
+  initialPointerPosition.x = event.clientX;
+  initialPointerPosition.y = event.clientY;
+  console.log("drag start");
+}
+
+const dragStop = (event: PointerEvent) => {
+  isDragActive = false;
+  let deltaX = event.clientX - initialPointerPosition.x;
+  slidesPosition.x += deltaX;
+  console.log("drag stop");
+}
+
+const dragMove = (event: PointerEvent) => {
+  if(!isDragActive) {
+    return;
+  }
+  let deltaX = event.clientX - initialPointerPosition.x;
+  renderImages(deltaX);
+  console.log("drag move");
+}
+
 const initializeCarousel = () => {
-  canvasContext.value = canvasElement.value.getContext("2d");
+  canvasContext.value = canvasElement.value?.getContext("2d") || null;
   loadImages();
 }
 
 const loadImages = () => {
   imageElements = [];
 
-  props.images.forEach((item) => {
+  props.images?.forEach((item) => {
     const currentElement = new Image();
     currentElement.src = item;
-    currentElement.style.objectFit = "scale-down";
     currentElement.onload = () => {
       imageElements.push(currentElement);
-      renderImages();
+      renderImages(0);
     }
   });
 }
 
-const renderImages = () => {
-  imageElements.forEach((item) => {
-    canvasContext.value.drawImage(item, 0, 0, canvasSize.width, canvasSize.height);
+const renderImages = (deltaX: number) => {
+  canvasContext.value?.clearRect(0, 0, canvasSize.width, canvasSize.height);
+  imageElements.forEach((item, index: number) => {
+    let scale = Math.min(canvasSize.width / item.width, canvasSize.height / item.height);
+    let itemSize = {
+      width: item.width * scale,
+      height: item.height * scale
+    };
+    let offset = {
+      x: (canvasSize.width - itemSize.width) / 2 + deltaX + slidesPosition.x,
+      y: (canvasSize.height - itemSize.height) / 2
+    };
+    let positionX = canvasSize.width * index
+    canvasContext.value?.drawImage(item, positionX + offset.x, offset.y, itemSize.width, itemSize.height);
   });
 }
 </script>
 
 <template>
-  <canvas ref="canvasElement" width="800" height="600"></canvas>
+  <canvas
+    ref="canvasElement"
+    @pointerdown="dragStart"
+    @pointermove="dragMove"
+    @pointerup="dragStop"
+    @pointerleave="dragStop"
+    width="800" height="600"
+  ></canvas>
 </template>
 
 <style scoped>

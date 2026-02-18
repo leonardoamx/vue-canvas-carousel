@@ -2,14 +2,22 @@
 import { onMounted, ref } from 'vue';
 
 const props = defineProps({
-  images: Array<string>
+  images: Array<string>,
+  width: {
+    type: Number,
+    default: 800
+  },
+  height: {
+    type: Number,
+    default: 600
+  },
 });
 
 const canvasElement = ref<HTMLCanvasElement | null>(null);
 const canvasContext = ref<CanvasRenderingContext2D | null>(null);
 const canvasSize = {
-  width: 800,
-  height: 600
+  width: 0,
+  height: 0
 };
 const initialPointerPosition = {
   x: 0,
@@ -54,6 +62,8 @@ const dragMove = (event: PointerEvent) => {
 
 const initializeCarousel = () => {
   canvasContext.value = canvasElement.value?.getContext("2d") || null;
+  canvasSize.width = canvasElement.value?.width || 0;
+  canvasSize.height = canvasElement.value?.height || 0;
   loadImages();
 }
 
@@ -105,7 +115,7 @@ const renderImages = (deltaX: number) => {
     @pointermove="dragMove"
     @pointerup="dragStop"
     @pointerleave="dragStop"
-    width="800" height="600"
+    :width="props.width" :height="props.height"
   ></canvas>
 </template>
 

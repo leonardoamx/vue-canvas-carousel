@@ -18,7 +18,7 @@ const imagesList = ref([
     Objective: Render a set of images on a canvas element and create a carousel effect by transitioning between them. The carousel should automatically cycle through the images every few seconds, and users should also have the option to manually navigate through the images using buttons or swipe gestures.
   </p>
 
-  <CanvasImageCarousel :images="imagesList" />
+    <CanvasImageCarousel :images="imagesList" :width="800" :height="500" />
 </template>
 
 <style scoped></style>

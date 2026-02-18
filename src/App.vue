@@ -3,10 +3,12 @@ import { ref } from 'vue';
 import CanvasImageCarousel from './components/CanvasImageCarousel.vue';
 
 const imagesList = ref([
-  "https://picsum.photos/800/400",
-  "https://picsum.photos/600/400",
-  "https://picsum.photos/400/400",
-  "https://picsum.photos/500/1200",
+  "https://picsum.photos/2000/1000",
+  "https://picsum.photos/2000/1500",
+  "https://picsum.photos/2000/4000",
+  "https://picsum.photos/2000/3000",
+  "https://picsum.photos/2000/2000",
+  "https://picsum.photos/1200/5000",
 ]);
 </script>
 
